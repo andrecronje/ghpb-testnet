@@ -39,6 +39,7 @@ import (
 	"github.com/hpb-project/ghpb/network/p2p/discover"
 	"github.com/hpb-project/ghpb/common/constant"
 	"github.com/hpb-project/ghpb/common/rlp"
+	"strconv"
 )
 
 const (
@@ -561,6 +562,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 		}
 
 	case msg.Code == NewBlockMsg:
+		log.Info("received block ")
 		// Retrieve and decode the propagated block
 		var request newBlockData
 		if err := msg.Decode(&request); err != nil {
@@ -597,11 +599,13 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 		if atomic.LoadUint32(&pm.acceptTxs) == 0 {
 			break
 		}
+
 		// Transactions can be processed, parse all of them and deliver to the pool
 		var txs []*types.Transaction
 		if err := msg.Decode(&txs); err != nil {
 			return errResp(ErrDecode, "msg %v: %v", msg, err)
 		}
+		log.Info("received tx",strconv.Itoa(len(txs)))
 		for i, tx := range txs {
 			// Validate and mark the remote transaction
 			if tx == nil {
@@ -610,6 +614,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 			p.MarkTransaction(tx.Hash())
 		}
 		pm.txpool.AddRemotes(txs)
+		log.Info("addremote")
 
 	default:
 		return errResp(ErrInvalidMsgCode, "%v", msg.Code)
@@ -624,6 +629,7 @@ func (pm *ProtocolManager) BroadcastBlock(block *types.Block, propagate bool) {
 	peers := pm.peers.PeersWithoutBlock(hash)
 
 	// If propagation is requested, send to a subset of the peer
+	log.Info("propagate",propagate)
 	if propagate {
 		// Calculate the TD of the block (it's not imported yet, so block.Td is not valid)
 		var td *big.Int
@@ -649,6 +655,7 @@ func (pm *ProtocolManager) BroadcastBlock(block *types.Block, propagate bool) {
 		for _, peer := range transfer {
 			if peer.RemoteType() == p2p.NtLight {
 				peer.SendNewBlock(block, td)
+				log.Info("send block to light")
 			}
 		}
 		log.Trace("Propagated block", "hash", hash, "recipients", len(transfer), "duration", common.PrettyDuration(time.Since(block.ReceivedAt)))

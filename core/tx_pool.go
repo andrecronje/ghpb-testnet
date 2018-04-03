@@ -801,6 +801,7 @@ func (pool *TxPool) addTxsLocked(txs []*types.Transaction, local bool) error {
 		for addr, _ := range dirty {
 			addrs = append(addrs, addr)
 		}
+		log.Info("promoteExecutables")
 		pool.promoteExecutables(addrs)
 	}
 	return nil
@@ -894,7 +895,7 @@ func (pool *TxPool) promoteExecutables(accounts []common.Address) {
 		// Gather all executable transactions and promote them
 		for _, tx := range list.Ready(pool.pendingState.GetNonce(addr)) {
 			hash := tx.Hash()
-			log.Trace("Promoting queued transaction", "hash", hash)
+			log.Info("Promoting queued transaction", "hash", hash)
 			pool.promoteTx(addr, hash, tx)
 		}
 		// Drop all transactions over the allowed limit
