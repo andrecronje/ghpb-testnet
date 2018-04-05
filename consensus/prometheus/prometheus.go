@@ -612,7 +612,7 @@ func (c *Prometheus) Seal(chain consensus.ChainReader, block *types.Block, stop 
 	// 比较难度值，确定是否为适合的时间
 	if header.Difficulty.Cmp(diffNoTurn) == 0 {
 		// It's not our turn explicitly to sign, delay it a bit
-		wiggle := time.Duration(len(1)/2+1) * wiggleTime
+		wiggle := time.Duration(1/2+1) * wiggleTime
 		delay += time.Duration(rand.Int63n(int64(wiggle)))
 
 		log.Info("Out-of-turn signing requested", "wiggle", common.PrettyDuration(wiggle))
