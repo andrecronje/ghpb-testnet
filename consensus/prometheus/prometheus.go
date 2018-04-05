@@ -106,7 +106,7 @@ func (c *Prometheus) Prepare(chain consensus.ChainReader, header *types.Header) 
 	log.Info("Prepare the parameters for mining")
 	
 	uniquerand := getUniqueRandom(chain)
-    signerHash := common.BytesToAddressHash(common.Fnv_hash_to_byte([]byte(c.signer.Str() + uniquerand)))
+    //signerHash := common.BytesToAddressHash(common.Fnv_hash_to_byte([]byte(c.signer.Str() + uniquerand)))
 	header.Random = uniquerand
 
 	// Assemble the voting snapshot to check which votes make sense
