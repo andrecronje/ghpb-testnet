@@ -581,7 +581,7 @@ func (c *Prometheus) Seal(chain consensus.ChainReader, block *types.Block, stop 
 	c.lock.RUnlock()
 
 	// Bail out if we're unauthorized to sign a block
-	snap, err := c.snapshot(chain, number-1, header.ParentHash, nil)
+	/*snap, err := c.snapshot(chain, number-1, header.ParentHash, nil)
 	//
 	if err != nil {
 		return nil, err
@@ -589,7 +589,7 @@ func (c *Prometheus) Seal(chain consensus.ChainReader, block *types.Block, stop 
 
 	if _, authorized := snap.Signers[signerHash]; !authorized {
 		return nil, errUnauthorized
-	}
+	}*/
 
 	log.Info("Proposed the random number in current round:" + header.Random)
 
