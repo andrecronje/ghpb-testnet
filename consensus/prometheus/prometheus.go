@@ -574,10 +574,10 @@ func (c *Prometheus) Seal(chain consensus.ChainReader, block *types.Block, stop 
 	signer, signFn := c.signer, c.signFn
 
 	log.Info("Current seal random is" + header.Random)
-	signerHash := common.BytesToAddressHash(common.Fnv_hash_to_byte([]byte(signer.Str() + header.Random)))
+	/*signerHash := common.BytesToAddressHash(common.Fnv_hash_to_byte([]byte(signer.Str() + header.Random)))
 
 	log.Info("signer's address","signer", signer.Hex())
-
+*/
 	c.lock.RUnlock()
 
 	// Bail out if we're unauthorized to sign a block
