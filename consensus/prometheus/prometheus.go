@@ -110,7 +110,7 @@ func (c *Prometheus) Prepare(chain consensus.ChainReader, header *types.Header) 
 	header.Random = uniquerand
 
 	// Assemble the voting snapshot to check which votes make sense
-	snap, err := c.snapshot(chain, number-1, header.ParentHash, nil)
+	/*snap, err := c.snapshot(chain, number-1, header.ParentHash, nil)
 	if err != nil {
 		return err
 	}
@@ -133,15 +133,15 @@ func (c *Prometheus) Prepare(chain consensus.ChainReader, header *types.Header) 
 			}
 		}
 		c.lock.RUnlock()
-	}
+	}*/
 
 	// Set the correct difficulty
 	// 根据 addressHash 来判断是否
 	header.Difficulty = diffNoTurn
 	//if snap.inturn(header.Number.Uint64(), c.signerHash) {
-	if snap.inturn(header.Number.Uint64(), signerHash) {
+	/*if snap.inturn(header.Number.Uint64(), signerHash) {
 		header.Difficulty = diffInTurn
-	}
+	}*/
 	// Ensure the extra data has all it's components
 	if len(header.Extra) < extraVanity {
 		header.Extra = append(header.Extra, bytes.Repeat([]byte{0x00}, extraVanity-len(header.Extra))...)
@@ -149,12 +149,12 @@ func (c *Prometheus) Prepare(chain consensus.ChainReader, header *types.Header) 
 
 	header.Extra = header.Extra[:extraVanity]
 
-	if number%c.config.Epoch == 0 {
+	/*if number%c.config.Epoch == 0 {
 		//在投票周期的时候，放入全部的AddressHash
 		for _, signerHash := range snap.signers() {
 			header.Extra = append(header.Extra, signerHash[:]...)
 		}
-	}
+	}*/
 	header.Extra = append(header.Extra, make([]byte, extraSeal)...)
 
 	// Mix digest is reserved for now, set to empty
